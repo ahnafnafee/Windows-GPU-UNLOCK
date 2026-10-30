@@ -138,7 +138,7 @@ int main(void) {
   setup(SUCCESS);gets=enables=disables=0;pci.Attributes=attr;
   CHECK(!EFI_ERROR(GuEnableMaster()));
   /* Identity change is a separate rejection before any Attributes call. */
-  *(UINT32 *)config=0x220610de; /* Old RTX3080 must now be refused. */
+  *(UINT32 *)config=GU_BOARD_ID^0x00010000U; /* Any other device ID, including for an RTX 3080 profile. */
   clearing=TRUE;CHECK(EFI_ERROR(GuClearMaster()));clearing=FALSE;
   CHECK(!disables && Gu.retained && !GuSafeToReturn() && (config[4]&4));
   puts("BME attributes changed identity containment refusal: PASS");

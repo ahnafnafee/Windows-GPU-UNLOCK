@@ -1,5 +1,16 @@
 # Changes
 
+## Unreleased — admit the GA102 RTX 3080 10GB local tuple
+
+- Add `220610de` to the generic read-only probe and the LOCAL envelope, coupled to
+  chip `b72000a1` and `2800` MiB only. It accepts the three reviewed GA102 nvgop
+  codes that the 3090 accepts; another version or `.text` hash is still refused.
+- Evidence is the read-only diagnostic in issue #20 and the upstream module's
+  shared GA102 recipe. No unlock transaction on a `2206` card is recorded here.
+- Host tests that used `0x2206` as a foreign device ID now derive one from
+  `GU_BOARD_ID`, and the generator's "unproven memory" case uses `0x1400`, so a
+  `2206` profile's own checks stay meaningful. Synthetic replays gain `--gpu 3080`.
+
 ## Unreleased — preserve captured state in host qualification fixtures
 
 - Initialize the app mock's PCI attributes from its captured command, including

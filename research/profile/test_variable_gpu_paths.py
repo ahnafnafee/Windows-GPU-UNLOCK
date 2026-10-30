@@ -44,7 +44,7 @@ def main():
     parser.add_argument('--clang',default='clang')
     parser.add_argument('--topology',choices=('aggregate','nonaggregate','no-edid'),default='aggregate')
     parser.add_argument('--generated-profile',action='store_true')
-    parser.add_argument('--gpu',choices=('3090','3070','3060ti'),default='3090')
+    parser.add_argument('--gpu',choices=('3090','3080','3070','3060ti'),default='3090')
     parser.add_argument('--children',nargs='+',type=int,choices=(1,2,3,4),default=(1,2))
     parser.add_argument('--segment',type=lambda value:int(value,0),default=0)
     parser.add_argument('--output',type=Path,required=True)
@@ -81,6 +81,7 @@ def main():
     aggregate=args.topology=='aggregate';no_edid=args.topology=='no-edid'
     card={'board':0x248410de,'chip':0xb74000a1,'memory':0x2000} if args.gpu=='3070' else {}
     if args.gpu=='3060ti':card={'board':0x24c910de,'chip':0xb74000a1,'memory':0x2000}
+    if args.gpu=='3080':card={'board':0x220610de,'chip':0xb72000a1,'memory':0x2800}
     board=card.get('board',0x220410de)
     for hops,hid,children in itertools.product((1,2,3,8,16),(3,8),args.children):
         case=out/f'hops{hops}-root{hid}-children{children}';case.mkdir()

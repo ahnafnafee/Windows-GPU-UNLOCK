@@ -39,6 +39,12 @@ class FamilyTests(unittest.TestCase):
         cases = [(102, 0x220a10de, 0x6000, 0xb72000a1),
                  (102, 0x220a10de, 0x5ff4, 0xb72000a1),
                  (102, 0x220a10de, 0x2800, 0xb72000a1),
+                 (102, 0x220610de, 0x6000, 0xb72000a1),
+                 (102, 0x220610de, 0x5ff4, 0xb72000a1),
+                 (102, 0x220610de, 0x3000, 0xb72000a1),
+                 (102, 0x220610de, 0x2800, 0xb72000a2),
+                 (104, 0x220610de, 0x2800, 0xb74000a1),
+                 (102, 0x220410de, 0x2800, 0xb72000a1),
                  (102, 0x221610de, 0x6000, 0xb72000a1),
                  (102, 0x220410de, 0x3000, 0xb72000a1),
                  (102, 0x220410de, 0x6000, 0xb72000a2),
@@ -74,6 +80,11 @@ class FamilyTests(unittest.TestCase):
             ['-DGU_PROFILE_LOCAL','-DGU_BOARD_ID=0x220a10deU','-DGU_DEVICE_MEMORY_SIZE=0x3000U','-DGU_CHIP_ID=0xb72000a1U'])
         self.assertEqual(done.returncode,0,done.stderr)
 
+    def test_rtx3080_10gb_uses_exact_ga102_tuple(self):
+        done=compile_source('#include "gpu-family.h"\n_Static_assert(GU_GPU_FAMILY == 102, "GA102");\n',
+            ['-DGU_PROFILE_LOCAL','-DGU_BOARD_ID=0x220610deU','-DGU_DEVICE_MEMORY_SIZE=0x2800U','-DGU_CHIP_ID=0xb72000a1U'])
+        self.assertEqual(done.returncode,0,done.stderr)
+
     def test_profile_family_and_firmware_cannot_be_overridden(self):
         for define in ('GU_GPU_FAMILY=104', 'GU_FIRMWARE_PROFILE=2', 'GU_GPU_FAMILY_GA102=104',
                        'GU_FIRMWARE_AMI_B650M_3057=2'):
@@ -84,6 +95,7 @@ class FamilyTests(unittest.TestCase):
     def test_legacy_local_headers_keep_all_admitted_ga102_combinations(self):
         cases = list(itertools.product((0x220410de, 0x220310de), (0x6000, 0x5ff4), (0, 1)))
         cases += [(0x220a10de, 0x3000, flag) for flag in (0, 1)]
+        cases += [(0x220610de, 0x2800, flag) for flag in (0, 1)]
         for board, memory, no_edid in cases:
             with self.subTest(board=board, memory=memory, no_edid=no_edid), tempfile.TemporaryDirectory() as directory:
                 folder = Path(directory)

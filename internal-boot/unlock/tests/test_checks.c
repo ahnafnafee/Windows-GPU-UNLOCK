@@ -86,7 +86,7 @@ static void TestLegacyCapture(const UINT32 Captured[64]) {
         Caps.msix == 0 && Caps.pcie_version == 2,
         "capture returns linked caps only; c8 is unlinked");
   Check(memcmp(C, Before, sizeof(C)) == 0, "validation does not modify config");
-  C[0]=0x220610de; Reject(C,"RTX3080 rejected with otherwise real config");
+  C[0]=GU_BOARD_ID^0x00010000U; Reject(C,"other GA10x device ID rejected with otherwise real config");
   memcpy(C,Before,sizeof(C));C[0]=0x164e1002;C[11]=0x88771043;
   Reject(C,"AMD display cannot be target");memcpy(C,Before,sizeof(C));
   Byte(C, 0xb5, 0xc8);
